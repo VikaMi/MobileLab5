@@ -1,7 +1,6 @@
 package com.example.v.vikaApp.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,28 +9,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.v.vikaApp.R;
+import com.example.v.vikaApp.model.Cat;
+import com.example.v.vikaApp.ui.ExpandedActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private String TAG = "Adapter";
+    private static final String TAG = "RecyclerViewAdapter";
+    private ArrayList<Cat> mCats;
 
-    private ArrayList<String> mImageNames;
-    private ArrayList<Bitmap> mImages;
-    private Context mContext;
-
-    public RecyclerViewAdapter(Context context, ArrayList<Bitmap> images) {
+    public RecyclerViewAdapter(ArrayList<Cat> cats) {
         Log.i(TAG, "Constructor");
-        mImages = images;
-        mContext = context;
-        Log.i(TAG, "ImageNames size: " + mImages.size());
+        mCats = cats;
     }
-
-
 
     @NonNull
     @Override
@@ -43,30 +41,53 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
         Log.i(TAG, "onBindViewHolder");
-        Glide.with(mContext)
+        final Context context = viewHolder.mImageView.getContext();
+        RequestOptions glideOptions = new RequestOptions();
+        Glide.with(context)
                 .asBitmap()
-                .load(mImages.get(position))
+                .load(mCats.get(viewHolder.getAdapterPosition()).getImage())
+                .apply(glideOptions.centerCrop())
                 .into(viewHolder.mImageView);
-
+        viewHolder.mTextView.setText(mCats.get(viewHolder.getAdapterPosition()).getId());
+        viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "OnClick: " + mCats.get(viewHolder.getAdapterPosition()).getId());
+                Toast.makeText(context, mCats.get(viewHolder.getAdapterPosition()).getId(),
+                        Toast.LENGTH_SHORT).show();
+                context.startActivity(ExpandedActivity.getStartIntent(context,
+                        mCats.get(viewHolder.getAdapterPosition()).getId(),
+                        mCats.get(viewHolder.getAdapterPosition()).getImage()));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mImages.size();
+        return mCats.size();
     }
 
+    public void clear() {
+        mCats.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<Cat> cats) {
+        mCats.addAll(cats);
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-
         ImageView mImageView;
-        RelativeLayout parentLayout;
+        TextView mTextView;
+        RelativeLayout mRecyclerView;
 
         ViewHolder(View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageView);
-            parentLayout = itemView.findViewById(R.id.parent_layout);
+            mTextView = itemView.findViewById(R.id.imageHeader);
+            mRecyclerView = itemView.findViewById(R.id.recycler_view_cats);
         }
     }
 }

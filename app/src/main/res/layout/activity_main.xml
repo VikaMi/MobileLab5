@@ -12,7 +12,7 @@
 
 
         <Button
-            android:id="@+id/cat_button"
+            android:id="@+id/button_cat"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="350dp"
             android:layout_height="400dp"
