@@ -17,6 +17,9 @@ deploy:
   file: "app/build/outputs/apk/debug/app-debug.apk"
   skip_cleanup: true
   on:
+  
+    repo: VikaMi/MobileLab5
+    all_branches: true
     tags: false
     all_branches: true
 
