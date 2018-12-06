@@ -1,32 +1,23 @@
 package com.example.v.vikaApp;
 
 import android.app.Application;
-import android.content.res.Configuration;
+
+import com.example.v.vikaApp.api.CatInterface;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class App extends Application {
-
     private static CatInterface catInterface;
+
     public static CatInterface getApi() {
         return catInterface;
     }
 
     @Override
     public void onCreate() {
-        initRetrofit();
         super.onCreate();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
+        initRetrofit();
     }
 
     private void initRetrofit() {
